@@ -1,43 +1,53 @@
 {% set name = "pygeohash" %}
-{% set version = "1.2.0" %}
+{% set version = "3.3.2" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 750e51643e743eabd065a84fc8c1912c5843b648143137919e4a9776366d921e
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 77ef146b4d227b776fc1cc4515517e99a4da6b8b0b795c02a4994d3d24b5857c
 
 build:
-  noarch: python
-  number: 1
-  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ stdlib('c') }}
   host:
     - python
     - pip
+    - setuptools >=42.0.0
+    - wheel
   run:
     - python
 
 test:
   imports:
     - pygeohash
+    - pygeohash.cgeohash.geohash_module
+  requires:
+    - pip
+  commands:
+    - pip check
 
 about:
-  home: https://github.com/wdm0006/pygeohash
-  license: AGPL-3.0
-  license_family: AGPL
+  home: https://pygeohash.mcginniscommawill.com
+  license: MIT
+  license_family: MIT
   license_file: LICENSE.txt
-  summary: 'A module for decoding and encoding geohashes to and from latitude and longitude coordinates'
-
+  summary: Python module for interacting with geohashes
   description: |
     Pygeohash is a Python module that provides functions for
     decoding and encoding geohashes to and from latitude and
     longitude coordinates, and doing basic calculations and
-    approximations with them.
-
+    approximations with them. Since 3.0.0 the core codec is
+    implemented as a C extension.
+  doc_url: https://pygeohash.mcginniscommawill.com
+  dev_url: https://github.com/wdm0006/pygeohash
 
 extra:
   recipe-maintainers:
@@ -46,3 +56,4 @@ extra:
     - adbeda
     - agcopenhaver
     - oblute
+    - wdm0006
